@@ -45,6 +45,34 @@
             overflow: hidden;
         }
 
+        .top-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 2;
+        }
+
+        .btn-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #0f172a;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(2, 6, 23, 0.15);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .btn-admin:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
         .header::after {
             content: '🧊';
             position: absolute;
@@ -246,6 +274,9 @@
 
 <div class="container">
     <div class="header">
+        <div class="top-actions">
+            <a class="btn-admin" href="/admin/">🔐 Admin</a>
+        </div>
         <h1>Lembar Kerja Siswa</h1>
         <p>Pengenalan Dasar 3D Modeling & Blender</p>
     </div>
