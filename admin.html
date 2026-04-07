@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin LKS - Cek Jawaban Siswa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --line: #e2e8f0;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --brand: #0f766e;
+            --brand-2: #115e59;
+            --danger: #b91c1c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top right, #d1fae5 0%, #f8fafc 35%, #f8fafc 100%);
+            color: var(--ink);
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 14px 40px;
+        }
+
+        .hero {
+            background: linear-gradient(120deg, #0f172a, #134e4a);
+            color: #fff;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .hero p {
+            margin: 6px 0 0;
+            color: #ccfbf1;
+            font-size: 0.95rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 10px;
+        }
+
+        .stat {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            background: #f8fffe;
+        }
+
+        .stat .label {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .stat .value {
+            font-size: 1.35rem;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr auto;
+            gap: 10px;
+        }
+
+        input, select, button, textarea {
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px 11px;
+            background: #fff;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 13px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-brand {
+            background: var(--brand);
+            color: #fff;
+        }
+
+        .btn-brand:hover { background: var(--brand-2); }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 880px;
+            background: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chip {
+            display: inline-block;
+            background: #ecfeff;
+            color: #155e75;
+            border: 1px solid #a5f3fc;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        dialog {
+            width: min(950px, 94vw);
+            border: none;
+            border-radius: 14px;
+            padding: 0;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.22);
+        }
+
+        dialog::backdrop { background: rgba(2, 6, 23, 0.45); }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            background: #f8fafc;
+        }
+
+        .modal-body {
+            padding: 16px;
+            max-height: 72vh;
+            overflow: auto;
+        }
+
+        .qa {
+            margin-bottom: 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .q {
+            font-weight: 600;
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+            color: #334155;
+        }
+
+        .a {
+            color: #0f172a;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .empty, .error {
+            text-align: center;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            background: #fff;
+        }
+
+        .error {
+            color: #991b1b;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        .auth-wrap {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 0 14px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .auth-title {
+            margin: 0 0 8px;
+            font-size: 1.2rem;
+        }
+
+        .auth-note {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin: 0 0 12px;
+        }
+
+        .auth-error {
+            margin-top: 10px;
+            color: #991b1b;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="authGate" class="auth-wrap">
+        <div class="auth-card">
+            <h2 class="auth-title">Masuk Dashboard Admin</h2>
+            <p class="auth-note">Masukkan password untuk melihat jawaban siswa.</p>
+            <form id="authForm">
+                <input id="adminPassword" type="password" placeholder="Masukkan password admin" required>
+                <button class="btn-brand" type="submit" style="margin-top:10px; width:100%;">Masuk</button>
+                <div id="authError" class="auth-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="wrap" id="adminWrap" style="display:none;">
+        <section class="hero">
+            <h1>Dashboard Admin LKS</h1>
+            <p>Monitor jawaban siswa kelas 8 untuk materi 3D Modeling & Blender.</p>
+        </section>
+
+        <section class="grid">
+            <div class="card stats">
+                <div class="stat">
+                    <div class="label">Total Jawaban</div>
+                    <div class="value" id="totalJawaban">0</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Jumlah Kelas</div>
+                    <div class="value" id="jumlahKelas">0</div>
+                </div>
+                <div class="stat">
+                    <div class="label">Update Terakhir</div>
+                    <div class="value" id="updateTerakhir">-</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toolbar">
+                    <input id="searchInput" type="text" placeholder="Cari nama siswa...">
+                    <select id="kelasFilter">
+                        <option value="">Semua kelas</option>
+                    </select>
+                    <select id="sortBy">
+                        <option value="desc">Waktu terbaru</option>
+                        <option value="asc">Waktu terlama</option>
+                        <option value="name">Nama A-Z</option>
+                    </select>
+                    <button class="btn-brand" id="exportBtn" type="button">Export CSV</button>
+                </div>
+                <div class="hint">Jika data tidak muncul, cek rules Realtime Database Anda. Halaman admin membutuhkan izin baca.</div>
+            </div>
+
+            <div id="errorBox" class="error" style="display:none;"></div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Ringkas Jawaban</th>
+                                <th>Waktu Kumpul</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <div id="emptyBox" class="empty" style="display:none; margin-top: 10px;">Belum ada data jawaban.</div>
+            </div>
+        </section>
+    </div>
+
+    <dialog id="detailDialog">
+        <div class="modal-head">
+            <strong id="modalTitle">Detail Jawaban</strong>
+            <div style="display:flex; gap:8px;">
+                <button id="copyBtn" class="btn-brand" type="button">Copy Ringkas</button>
+                <button id="closeBtn" type="button">Tutup</button>
+            </div>
+        </div>
+        <div id="modalBody" class="modal-body"></div>
+    </dialog>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbEiKBcEmNDczh5CP8_t10RLJrIG6snC0",
+            authDomain: "lks-blender.firebaseapp.com",
+            databaseURL: "https://lks-blender-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "lks-blender",
+            storageBucket: "lks-blender.firebasestorage.app",
+            messagingSenderId: "295603501312",
+            appId: "1:295603501312:web:82d436ebbaea646fcc1be5",
+            measurementId: "G-HECERE8TDJ"
+        };
+        const ADMIN_PASSWORD = 'Helios007';
+        const AUTH_KEY = 'lks_admin_access';
+
+        const tableBody = document.getElementById('tableBody');
+        const emptyBox = document.getElementById('emptyBox');
+        const errorBox = document.getElementById('errorBox');
+        const totalJawaban = document.getElementById('totalJawaban');
+        const jumlahKelas = document.getElementById('jumlahKelas');
+        const updateTerakhir = document.getElementById('updateTerakhir');
+
+        const searchInput = document.getElementById('searchInput');
+        const kelasFilter = document.getElementById('kelasFilter');
+        const sortBy = document.getElementById('sortBy');
+        const exportBtn = document.getElementById('exportBtn');
+
+        const detailDialog = document.getElementById('detailDialog');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const closeBtn = document.getElementById('closeBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        const authGate = document.getElementById('authGate');
+        const adminWrap = document.getElementById('adminWrap');
+        const authForm = document.getElementById('authForm');
+        const adminPassword = document.getElementById('adminPassword');
+        const authError = document.getElementById('authError');
+
+        let allRows = [];
+        let activeDetail = null;
+        let appStarted = false;
+
+        function cleanText(value) {
+            if (value === undefined || value === null) return '-';
+            return String(value).trim() || '-';
+        }
+
+        function parseTimestamp(ts) {
+            if (!ts) return '-';
+            const date = new Date(ts);
+            if (Number.isNaN(date.getTime())) return '-';
+            return date.toLocaleString('id-ID');
+        }
+
+        function buildSummary(item) {
+            const obj = item?.kegiatan_2?.contoh_objek || '-';
+            const tools = item?.kegiatan_2?.tiga_tools || '-';
+            return `Objek: ${cleanText(obj)} | Tools: ${cleanText(tools).slice(0, 60)}`;
+        }
+
+        function flattenForCsv(item) {
+            return {
+                nama: cleanText(item?.identitas?.nama),
+                kelas: cleanText(item?.identitas?.kelas),
+                waktu_kumpul: parseTimestamp(item?.waktu_kumpul),
+                apa_itu_blender: cleanText(item?.kegiatan_1?.apa_itu_blender),
+                bisa_buat_apa: cleanText(item?.kegiatan_1?.bisa_buat_apa),
+                tiga_tools: cleanText(item?.kegiatan_2?.tiga_tools),
+                contoh_objek: cleanText(item?.kegiatan_2?.contoh_objek),
+                arti_3d_modeling: cleanText(item?.kegiatan_3?.arti_3d_modeling),
+                fungsi_blender: cleanText(item?.kegiatan_3?.fungsi_blender),
+                move: cleanText(item?.kegiatan_3?.transform?.move),
+                rotate: cleanText(item?.kegiatan_3?.transform?.rotate),
+                scale: cleanText(item?.kegiatan_3?.transform?.scale),
+                sc_g: cleanText(item?.kegiatan_4?.shortcuts?.G),
+                sc_r: cleanText(item?.kegiatan_4?.shortcuts?.R),
+                sc_s: cleanText(item?.kegiatan_4?.shortcuts?.S),
+                sc_scroll: cleanText(item?.kegiatan_4?.shortcuts?.Scroll_Mouse),
+                sc_shift_mid: cleanText(item?.kegiatan_4?.shortcuts?.Shift_MidClick),
+                sc_shift_a: cleanText(item?.kegiatan_4?.shortcuts?.Shift_A),
+                sc_x: cleanText(item?.kegiatan_4?.shortcuts?.X_Delete),
+                sc_tab: cleanText(item?.kegiatan_4?.shortcuts?.Tab),
+                sc_e: cleanText(item?.kegiatan_4?.shortcuts?.E_Extrude),
+                sc_ctrl_r: cleanText(item?.kegiatan_4?.shortcuts?.Ctrl_R),
+                mengapa_penting: cleanText(item?.kegiatan_4?.mengapa_penting),
+                paling_sering: cleanText(item?.kegiatan_4?.paling_sering)
+            };
+        }
+
+        function toCsv(rows) {
+            if (!rows.length) return '';
+            const headers = Object.keys(rows[0]);
+            const escapeCsv = (str) => `"${String(str).replaceAll('"', '""')}"`;
+            const lines = [headers.join(',')];
+            rows.forEach((row) => {
+                lines.push(headers.map((h) => escapeCsv(row[h])).join(','));
+            });
+            return lines.join('\n');
+        }
+
+        function downloadCsv() {
+            const rendered = getFilteredRows().map((row) => flattenForCsv(row.data));
+            if (!rendered.length) {
+                alert('Tidak ada data untuk diexport.');
+                return;
+            }
+            const csv = toCsv(rendered);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rekap-lks-blender-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function getFilteredRows() {
+            const keyword = searchInput.value.trim().toLowerCase();
+            const kelas = kelasFilter.value;
+            const mode = sortBy.value;
+
+            let rows = allRows.filter((row) => {
+                const nama = cleanText(row?.data?.identitas?.nama).toLowerCase();
+                const kelasRow = cleanText(row?.data?.identitas?.kelas);
+                const passKeyword = !keyword || nama.includes(keyword);
+                const passKelas = !kelas || kelasRow === kelas;
+                return passKeyword && passKelas;
+            });
+
+            if (mode === 'name') {
+                rows.sort((a, b) => cleanText(a?.data?.identitas?.nama).localeCompare(cleanText(b?.data?.identitas?.nama), 'id'));
+            } else if (mode === 'asc') {
+                rows.sort((a, b) => (a?.data?.waktu_kumpul || 0) - (b?.data?.waktu_kumpul || 0));
+            } else {
+                rows.sort((a, b) => (b?.data?.waktu_kumpul || 0) - (a?.data?.waktu_kumpul || 0));
+            }
+
+            return rows;
+        }
+
+        function renderKelasOptions() {
+            const kelasSet = new Set(allRows.map((row) => cleanText(row?.data?.identitas?.kelas)).filter((k) => k !== '-'));
+            const selected = kelasFilter.value;
+            const list = Array.from(kelasSet).sort((a, b) => a.localeCompare(b, 'id'));
+            kelasFilter.innerHTML = '<option value="">Semua kelas</option>' + list.map((k) => `<option value="${k}">${k}</option>`).join('');
+            if (list.includes(selected)) kelasFilter.value = selected;
+        }
+
+        function renderStats(rows) {
+            totalJawaban.textContent = String(rows.length);
+            const kelasCount = new Set(rows.map((row) => cleanText(row?.data?.identitas?.kelas)).filter((k) => k !== '-')).size;
+            jumlahKelas.textContent = String(kelasCount);
+            const latestTs = rows.map((row) => row?.data?.waktu_kumpul || 0).sort((a, b) => b - a)[0] || 0;
+            updateTerakhir.textContent = latestTs ? parseTimestamp(latestTs) : '-';
+        }
+
+        function makeDetailHtml(item) {
+            const qas = [
+                ['Apa itu Blender?', item?.kegiatan_1?.apa_itu_blender],
+                ['Apa saja yang bisa dibuat?', item?.kegiatan_1?.bisa_buat_apa],
+                ['3 tools dari video', item?.kegiatan_2?.tiga_tools],
+                ['Contoh objek 3D', item?.kegiatan_2?.contoh_objek],
+                ['Arti 3D Modeling', item?.kegiatan_3?.arti_3d_modeling],
+                ['Fungsi Blender', item?.kegiatan_3?.fungsi_blender],
+                ['Transform Move (G)', item?.kegiatan_3?.transform?.move],
+                ['Transform Rotate (R)', item?.kegiatan_3?.transform?.rotate],
+                ['Transform Scale (S)', item?.kegiatan_3?.transform?.scale],
+                ['Shortcut G', item?.kegiatan_4?.shortcuts?.G],
+                ['Shortcut R', item?.kegiatan_4?.shortcuts?.R],
+                ['Shortcut S', item?.kegiatan_4?.shortcuts?.S],
+                ['Shortcut Scroll Mouse', item?.kegiatan_4?.shortcuts?.Scroll_Mouse],
+                ['Shortcut Shift + Klik Tengah', item?.kegiatan_4?.shortcuts?.Shift_MidClick],
+                ['Shortcut Shift + A', item?.kegiatan_4?.shortcuts?.Shift_A],
+                ['Shortcut X/Delete', item?.kegiatan_4?.shortcuts?.X_Delete],
+                ['Shortcut Tab', item?.kegiatan_4?.shortcuts?.Tab],
+                ['Shortcut E (Extrude)', item?.kegiatan_4?.shortcuts?.E_Extrude],
+                ['Shortcut Ctrl + R', item?.kegiatan_4?.shortcuts?.Ctrl_R],
+                ['Mengapa shortcut penting?', item?.kegiatan_4?.mengapa_penting],
+                ['Shortcut paling sering dipakai', item?.kegiatan_4?.paling_sering]
+            ];
+
+            return qas.map(([q, a]) => (
+                `<div class="qa"><div class="q">${q}</div><div class="a">${cleanText(a)}</div></div>`
+            )).join('');
+        }
+
+        function renderTable() {
+            const rows = getFilteredRows();
+            tableBody.innerHTML = '';
+
+            if (!rows.length) {
+                emptyBox.style.display = 'block';
+                renderStats([]);
+                return;
+            }
+
+            emptyBox.style.display = 'none';
+            renderStats(rows);
+
+            rows.forEach((row) => {
+                const item = row.data;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${cleanText(item?.identitas?.nama)}</strong></td>
+                    <td><span class="chip">${cleanText(item?.identitas?.kelas)}</span></td>
+                    <td>${buildSummary(item)}</td>
+                    <td>${parseTimestamp(item?.waktu_kumpul)}</td>
+                    <td>
+                        <div class="row-actions">
+                            <button type="button" class="btn-brand" data-key="${row.key}">Lihat</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            tableBody.querySelectorAll('button[data-key]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const key = btn.getAttribute('data-key');
+                    const found = allRows.find((r) => r.key === key);
+                    if (!found) return;
+                    activeDetail = found;
+                    modalTitle.textContent = `Detail: ${cleanText(found?.data?.identitas?.nama)} (${cleanText(found?.data?.identitas?.kelas)})`;
+                    modalBody.innerHTML = makeDetailHtml(found.data);
+                    detailDialog.showModal();
+                });
+            });
+        }
+
+        function copyCurrentDetail() {
+            if (!activeDetail) return;
+            const item = flattenForCsv(activeDetail.data);
+            const lines = Object.entries(item).map(([k, v]) => `${k}: ${v}`);
+            navigator.clipboard.writeText(lines.join('\n'));
+            copyBtn.textContent = 'Tersalin';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy Ringkas';
+            }, 1200);
+        }
+
+        function bindEvents() {
+            searchInput.addEventListener('input', renderTable);
+            kelasFilter.addEventListener('change', renderTable);
+            sortBy.addEventListener('change', renderTable);
+            exportBtn.addEventListener('click', downloadCsv);
+            closeBtn.addEventListener('click', () => detailDialog.close());
+            copyBtn.addEventListener('click', copyCurrentDetail);
+        }
+
+        function showError(message) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = message;
+        }
+
+        function hideError() {
+            errorBox.style.display = 'none';
+            errorBox.textContent = '';
+        }
+
+        function startAdminApp() {
+            if (appStarted) return;
+            appStarted = true;
+
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+
+            bindEvents();
+
+            onValue(ref(db, 'jawaban_lks_blender'), (snapshot) => {
+                hideError();
+                const value = snapshot.val() || {};
+                allRows = Object.entries(value).map(([key, data]) => ({ key, data }));
+                renderKelasOptions();
+                renderTable();
+            }, (error) => {
+                allRows = [];
+                renderKelasOptions();
+                renderTable();
+                showError('Gagal membaca data dari Realtime Database. Cek rules baca untuk node jawaban_lks_blender dan pastikan databaseURL benar.');
+                console.error(error);
+            });
+        }
+
+        function unlockAdmin() {
+            sessionStorage.setItem(AUTH_KEY, '1');
+            authGate.style.display = 'none';
+            adminWrap.style.display = 'block';
+            startAdminApp();
+        }
+
+        authForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            if (adminPassword.value === ADMIN_PASSWORD) {
+                authError.textContent = '';
+                unlockAdmin();
+                return;
+            }
+            authError.textContent = 'Password salah. Coba lagi.';
+            adminPassword.focus();
+            adminPassword.select();
+        });
+
+        if (sessionStorage.getItem(AUTH_KEY) === '1') {
+            unlockAdmin();
+        }
+    </script>
+</body>
+</html>
