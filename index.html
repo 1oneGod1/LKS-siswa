@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKS Informatika - 3D Modeling dengan Blender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ea580c;
+            --primary-hover: #c2410c;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --focus-ring: rgba(234, 88, 12, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '🧊';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            right: -20px;
+            top: -30px;
+            transform: rotate(15deg);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--border);
+        }
+
+        .card-title span {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1rem;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .help-text {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px var(--focus-ring);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .shortcut-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .kbd-label {
+            display: inline-block;
+            background: #1e293b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            font-weight: bold;
+            align-self: flex-start;
+            box-shadow: 0 2px 0 #0f172a;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(234, 88, 12, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(234, 88, 12, 0.2);
+        }
+
+        .btn-submit:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            display: none;
+            padding: 20px;
+            background-color: #ecfdf5;
+            color: #065f46;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #34d399;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 20px; }
+            .header h1 { font-size: 1.5rem; }
+            .shortcut-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Lembar Kerja Siswa</h1>
+        <p>Pengenalan Dasar 3D Modeling & Blender</p>
+    </div>
+
+    <div id="successAlert" class="alert">
+        🎉 Yeay! Tugasmu berhasil dikirim. Terima kasih!
+    </div>
+
+    <form id="lksForm">
+        <div class="card">
+            <h2 class="card-title"><span>👤</span> Identitas Diri</h2>
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" required placeholder="Ketik nama lengkapmu di sini...">
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" required placeholder="Contoh: 8A atau VIII-1">
+            </div>
+        </div>
+
+        <div class="card" style="background-color: #f8fafc; border-color: #cbd5e1;">
+            <h3 style="margin-top:0; color: #334155; display:flex; align-items:center; gap:8px;">
+                🎯 Tujuan Pembelajaran
+            </h3>
+            <ul style="margin:0; padding-left:20px; color: #475569;">
+                <li>Mengenal apa itu software Blender.</li>
+                <li>Memahami konsep dasar 3D modeling.</li>
+                <li>Mengidentifikasi tools & shortcut dasar Blender.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><span>1</span> Menonton Video Observasi</h2>
+            <span class="help-text">🔍 <b>Instruksi:</b> Tonton video di YouTube dengan kata kunci pencarian: <em>"Blender untuk pemula"</em>. Berdasarkan video tersebut, jawablah:</span>
+            <br>
+            <div class="form-group">
+                <label for="k1_apa">Apa itu Blender?</label>
+                <textarea id="k1_apa" required placeholder="Jelaskan menurut pemahamanmu..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="k1_buat">Apa saja yang bisa dibuat menggunakan Blender?</label>
+                <textarea id="k1_buat" required placeholder="Sebutkan contoh-contoh karyanya..."></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><span>2</span> Observasi Tools & Objek</h2>
+            <div class="form-group">
+                <label for="k2_tools">Sebutkan 3 tools (alat) yang kamu lihat di video tersebut!</label>
+                <textarea id="k2_tools" required placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="k2_objek">Sebutkan contoh objek 3D yang dibuat pada video itu!</label>
+                <input type="text" id="k2_objek" required placeholder="Contoh: Meja, donat, kursi, dll.">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><span>3</span> Pemahaman Konsep Transform</h2>
+            <div class="form-group">
+                <label for="k3_3d">Menurutmu, apa yang dimaksud dengan 3D Modeling?</label>
+                <textarea id="k3_3d" required placeholder="Jelaskan dengan bahasamu sendiri..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="k3_fungsi">Secara umum, apa fungsi utama dari software Blender?</label>
+                <textarea id="k3_fungsi" required placeholder="Tuliskan jawabanmu di sini..."></textarea>
+            </div>
+
+            <label style="margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
+                ⚙️ <b>Jelaskan fungsi dari istilah Transformasi dasar di bawah ini:</b>
+            </label>
+            <div class="form-group">
+                <label for="k3_move">📍 Move (G):</label>
+                <input type="text" id="k3_move" required placeholder="Fungsinya untuk...">
+            </div>
+            <div class="form-group">
+                <label for="k3_rotate">🔄 Rotate (R):</label>
+                <input type="text" id="k3_rotate" required placeholder="Fungsinya untuk...">
+            </div>
+            <div class="form-group">
+                <label for="k3_scale">📏 Scale (S):</label>
+                <input type="text" id="k3_scale" required placeholder="Fungsinya untuk...">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><span>4</span> Eksplorasi Shortcut Keyboard</h2>
+            <span class="help-text" style="margin-bottom: 15px;">⌨️ Kerja di Blender akan sangat cepat jika menggunakan shortcut! Isi tabel di bawah ini sesuai fungsi tombolnya:</span>
+
+            <div class="shortcut-grid">
+                <div class="shortcut-item">
+                    <span class="kbd-label">G</span>
+                    <input type="text" id="sc_g" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">R</span>
+                    <input type="text" id="sc_r" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">S</span>
+                    <input type="text" id="sc_s" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">Scroll Mouse</span>
+                    <input type="text" id="sc_scroll" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">Shift + Klik Tengah</span>
+                    <input type="text" id="sc_shift_mid" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">Shift + A</span>
+                    <input type="text" id="sc_shift_a" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">X / Delete</span>
+                    <input type="text" id="sc_x" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">Tab</span>
+                    <input type="text" id="sc_tab" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">E (Extrude)</span>
+                    <input type="text" id="sc_e" required placeholder="Fungsi...">
+                </div>
+                <div class="shortcut-item">
+                    <span class="kbd-label">Ctrl + R</span>
+                    <input type="text" id="sc_ctrl_r" required placeholder="Fungsi...">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 25px;">
+                <label for="k4_alasan">💡 Mengapa menggunakan shortcut itu penting saat mengoperasikan Blender?</label>
+                <textarea id="k4_alasan" required placeholder="Berikan alasanmu..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="k4_paling_sering">⭐ Menurutmu, dari semua shortcut di atas, mana yang akan paling sering digunakan? Mengapa?</label>
+                <textarea id="k4_paling_sering" required placeholder="Tulis prediksimu dan alasannya..."></textarea>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">
+            🚀 Kirim Jawaban LKS
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 0.8rem;">
+        &copy; Tugas LKS Informatika - 3D Modeling
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBbEiKBcEmNDczh5CP8_t10RLJrIG6snC0",
+        authDomain: "lks-blender.firebaseapp.com",
+        databaseURL: "https://lks-blender-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "lks-blender",
+        storageBucket: "lks-blender.firebasestorage.app",
+        messagingSenderId: "295603501312",
+        appId: "1:295603501312:web:82d436ebbaea646fcc1be5",
+        measurementId: "G-HECERE8TDJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const lksForm = document.getElementById('lksForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successAlert = document.getElementById('successAlert');
+
+    lksForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Mengirim data...";
+
+        const lksData = {
+            identitas: {
+                nama: document.getElementById('nama').value,
+                kelas: document.getElementById('kelas').value,
+            },
+            kegiatan_1: {
+                apa_itu_blender: document.getElementById('k1_apa').value,
+                bisa_buat_apa: document.getElementById('k1_buat').value,
+            },
+            kegiatan_2: {
+                tiga_tools: document.getElementById('k2_tools').value,
+                contoh_objek: document.getElementById('k2_objek').value,
+            },
+            kegiatan_3: {
+                arti_3d_modeling: document.getElementById('k3_3d').value,
+                fungsi_blender: document.getElementById('k3_fungsi').value,
+                transform: {
+                    move: document.getElementById('k3_move').value,
+                    rotate: document.getElementById('k3_rotate').value,
+                    scale: document.getElementById('k3_scale').value,
+                }
+            },
+            kegiatan_4: {
+                shortcuts: {
+                    G: document.getElementById('sc_g').value,
+                    R: document.getElementById('sc_r').value,
+                    S: document.getElementById('sc_s').value,
+                    Scroll_Mouse: document.getElementById('sc_scroll').value,
+                    Shift_MidClick: document.getElementById('sc_shift_mid').value,
+                    Shift_A: document.getElementById('sc_shift_a').value,
+                    X_Delete: document.getElementById('sc_x').value,
+                    Tab: document.getElementById('sc_tab').value,
+                    E_Extrude: document.getElementById('sc_e').value,
+                    Ctrl_R: document.getElementById('sc_ctrl_r').value,
+                },
+                mengapa_penting: document.getElementById('k4_alasan').value,
+                paling_sering: document.getElementById('k4_paling_sering').value
+            },
+            waktu_kumpul: serverTimestamp()
+        };
+
+        try {
+            await push(ref(db, 'jawaban_lks_blender'), lksData);
+
+            successAlert.style.display = 'block';
+            lksForm.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 6000);
+        } catch (error) {
+            console.error('Gagal mengirim tugas:', error);
+            alert('Terjadi kesalahan saat mengirim tugas. Pastikan konfigurasi Firebase sudah benar dan rules database sudah di-set.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "🚀 Kirim Jawaban LKS";
+        }
+    });
+</script>
+
+</body>
+</html>

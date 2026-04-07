@@ -1,0 +1,9 @@
+{
+  "rules": {
+    ".read": false,
+    "jawaban_lks_blender": {
+      ".read": false,
+      ".write": true
+    }
+  }
+}
